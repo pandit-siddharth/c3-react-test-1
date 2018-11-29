@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { User } from "../User/User";
 import { avatars as defaultAvatars } from "../../avatars"
 import { config } from "../../config"
+import { Error } from "../Error/Error"
 import axios from "axios";
 
 export class PearsonUsers extends Component {
@@ -10,7 +11,8 @@ export class PearsonUsers extends Component {
     super(props);
 
     this.state = {
-      users: defaultAvatars
+      users: defaultAvatars,
+      error: ''
     };
   }
 
@@ -51,29 +53,39 @@ export class PearsonUsers extends Component {
   }
 
   render() {
-    const { users, deletedCount } = this.state;
+    const { users, error, deletedCount } = this.state;
     return (
       <div className="pearson-users">
         <h1><FormattedMessage id="app.title" defaultMessage={`Pearson User Management`} /></h1>
-        <React.Fragment>
-          <a className="btn-delete" href="" onClick={(e) => this.deleteDuplicates(e)} >
-            <FormattedMessage id="app.deleteUsers" defaultMessage={`Delete Duplicate Users`} /></a>
-          {deletedCount !== undefined ?
-            <div className="duplicate-label">
-              {deletedCount > 0 ?
-                <div>{deletedCount} <FormattedMessage id="app.deleted" defaultMessage={`duplicate users deleted`} /> !</div>
-                :
-                <div><FormattedMessage id="app.noDuplicates" defaultMessage={`No duplicate users found`} /> !</div>}
+        {error === '' && users && users.length >= 0 ?
+          <React.Fragment>
+            <a className="btn-delete" href="" onClick={(e) => this.deleteDuplicates(e)} >
+              <FormattedMessage id="app.deleteUsers" defaultMessage={`Delete Duplicate Users`} /></a>
+            {deletedCount !== undefined ?
+              <div className="duplicate-label">
+                {deletedCount > 0 ?
+                  <div>{deletedCount} <FormattedMessage id="app.deleted" defaultMessage={`duplicate users deleted`} /> !</div>
+                  :
+                  <div><FormattedMessage id="app.noDuplicates" defaultMessage={`No duplicate users found`} /> !</div>}
+              </div>
+              :
+              <div></div>
+            }
+            <div className="user-row">
+              {users.map((data, index) => {
+                return <User data={data} key={index} deleteUser={(e) => this.deleteUser(e, data)} />
+              })}
             </div>
-            :
-            <div></div>
-          }
-          <div className="user-row">
-            {users.map((data, index) => {
-              return <User data={data} key={index} deleteUser={(e) => this.deleteUser(e, data)} />
-            })}
-          </div>
-        </React.Fragment>
+          </React.Fragment>
+          :
+          <React.Fragment>
+            {error === '' ?
+              <div className="page-loading"><FormattedMessage id="app.fetching" defaultMessage={`Fetching user profiles..`} /></div>
+              :
+              <Error errMsg={error} />
+            }
+          </React.Fragment>
+        }
       </div>
     );
   }
