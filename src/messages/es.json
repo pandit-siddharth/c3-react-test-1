@@ -1,0 +1,8 @@
+{
+    "app.title": "Gestión de usuarios de Pearson",
+    "app.deleteUsers": "Eliminar usuarios duplicados",
+    "app.deleted": "usuarios duplicados eliminados",
+    "app.noDuplicates": "No se encontraron usuarios duplicados",
+    "app.fetching": "Obteniendo perfiles de usuario..",
+    "app.delete": "Borrar"
+}
